@@ -2,7 +2,7 @@ package easv.oe.roomdb1
 
 import android.content.res.TypedArray
 
-class PersonRepository : IPersonRepository {
+class PersonRepositoryInMemory : IPersonRepository {
 
     private val mPersons = mutableListOf<BEPerson>(BEPerson(1,"peter", 23))
 
