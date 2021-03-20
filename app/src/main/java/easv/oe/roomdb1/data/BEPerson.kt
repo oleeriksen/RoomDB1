@@ -1,4 +1,4 @@
-package easv.oe.roomdb1
+package easv.oe.roomdb1.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

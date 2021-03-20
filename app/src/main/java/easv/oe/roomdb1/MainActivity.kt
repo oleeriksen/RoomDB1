@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListAdapter
 import androidx.lifecycle.Observer
+import easv.oe.roomdb1.data.BEPerson
+import easv.oe.roomdb1.data.PersonRepositoryInDB
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -15,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         PersonRepositoryInDB.initialize(this)
-        insertTestData()
+        //insertTestData()
 
         setupDataObserver()
 

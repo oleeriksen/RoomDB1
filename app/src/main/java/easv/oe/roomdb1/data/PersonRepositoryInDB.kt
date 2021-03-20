@@ -1,8 +1,7 @@
-package easv.oe.roomdb1
+package easv.oe.roomdb1.data
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.room.Room
 import java.lang.IllegalStateException
 import java.util.concurrent.Executors
