@@ -18,6 +18,8 @@ class PersonRepositoryInDB private constructor(private val context: Context) {
 
     fun getAllNames(): LiveData<List<String>> = personDao.getAllNames()
 
+    fun getById(id: Int) = personDao.getById(id)
+
     private val executor = Executors.newSingleThreadExecutor()
 
     fun insert(p: BEPerson) {

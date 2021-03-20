@@ -13,6 +13,9 @@ interface PersonDao {
     @Query("SELECT name from BEPerson order by name")
     fun getAllNames(): LiveData<List<String>>
 
+    @Query("SELECT * from BEPerson where id = (:id)")
+    fun getById(id: Int): LiveData<BEPerson>
+
     @Insert
     fun insert(p: BEPerson)
 
