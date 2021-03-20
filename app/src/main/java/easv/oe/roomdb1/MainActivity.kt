@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         PersonRepositoryInDB.initialize(this)
         insertTestData()
 
-        refreshAdapter()
+        setupDataObserver()
 
     }
 
@@ -28,27 +28,27 @@ class MainActivity : AppCompatActivity() {
         mRep.insert(BEPerson(0,"Rup", 3))
     }
 
-    private fun refreshAdapter() {
+    private fun setupDataObserver() {
         val mRep = PersonRepositoryInDB.get()
-        val nameObserver = Observer<List<String>>{ names ->
-        val adapter: ListAdapter = ArrayAdapter(
-                this,
-                android.R.layout.simple_list_item_1, names.toTypedArray()
-        )
-        lvNames.adapter = adapter
+        val nameObserver = Observer<List<BEPerson>>{ persons ->
+             val asStrings = persons.map { p -> "${p.id}, ${p.name}"}
+             val adapter: ListAdapter = ArrayAdapter(
+                     this,
+                              android.R.layout.simple_list_item_1,
+                              asStrings.toTypedArray()
+                                                    )
+             lvNames.adapter = adapter
         }
-        mRep.getAllNames().observe(this, nameObserver)
+        mRep.getAll().observe(this, nameObserver)
     }
 
     fun onClickInsert(view: View) {
         val mRep = PersonRepositoryInDB.get()
         mRep.insert(BEPerson(0, etName.text.toString(), 23))
-        refreshAdapter()
     }
 
     fun onClickClear(view: View) {
         val mRep = PersonRepositoryInDB.get()
         mRep.clear()
-        refreshAdapter()
     }
 }

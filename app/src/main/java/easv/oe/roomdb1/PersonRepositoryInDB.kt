@@ -2,11 +2,12 @@ package easv.oe.roomdb1
 
 import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.room.Room
 import java.lang.IllegalStateException
 import java.util.concurrent.Executors
 
-class PersonRepositoryInDB private constructor(context: Context) {
+class PersonRepositoryInDB private constructor(private val context: Context) {
 
     private val database: PersonDatabase = Room.databaseBuilder(context.applicationContext,
                                                                 PersonDatabase::class.java,
@@ -14,11 +15,11 @@ class PersonRepositoryInDB private constructor(context: Context) {
 
     private val personDao = database.personDao()
 
-    private val executor = Executors.newSingleThreadExecutor()
-
     fun getAll(): LiveData<List<BEPerson>> = personDao.getAll()
 
     fun getAllNames(): LiveData<List<String>> = personDao.getAllNames()
+
+    private val executor = Executors.newSingleThreadExecutor()
 
     fun insert(p: BEPerson) {
         executor.execute{ personDao.insert(p) }
@@ -36,6 +37,7 @@ class PersonRepositoryInDB private constructor(context: Context) {
         executor.execute { personDao.deleteAll() }
     }
 
+
     companion object {
         private var Instance: PersonRepositoryInDB? = null
 
@@ -46,8 +48,14 @@ class PersonRepositoryInDB private constructor(context: Context) {
 
         fun get(): PersonRepositoryInDB {
             if (Instance != null) return Instance!!
-            throw IllegalStateException("Person rep not initialized")
+            throw IllegalStateException("Person repo not initialized")
         }
     }
-    // end of companion object
+
+
+
+
+
+
+
 }
