@@ -48,6 +48,9 @@ class PersonRepositoryInDB  {
         return null
     }
 
+    fun getByFilterName(filter: String): List<BEPerson> {
+        return cache.filter{ p -> p.name.contains(filter, true)}
+    }
 
     private val executor = Executors.newSingleThreadExecutor()
 

@@ -17,6 +17,8 @@ class MainActivity : AppCompatActivity() {
 
     val TAG = "xyz"
 
+    var filterActive: Boolean = false;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -38,20 +40,24 @@ class MainActivity : AppCompatActivity() {
     private fun setupDataObserver() {
         val mRep = PersonRepositoryInDB.get()
         val updateGUIObserver = Observer<List<BEPerson>>{ persons ->
-            val asStrings = persons.map { p -> "${p.id}, ${p.name}"}
-             val adapter: ListAdapter = ArrayAdapter(
-                     this,
-                              android.R.layout.simple_list_item_1,
-                              asStrings.toTypedArray()
-                                                    )
-             lvNames.adapter = adapter
+            setAdapterforListView(persons)
             Log.d(TAG, "UpdateGUI Observer notified")
         }
+        mRep.getAllLiveData().value
         mRep.getAllLiveData().observe(this, updateGUIObserver)
 
         lvNames.onItemClickListener = AdapterView.OnItemClickListener {_,_,pos,_ -> onClickPerson(pos)}
     }
 
+    private fun setAdapterforListView(persons: List<BEPerson>) {
+        val asStrings = persons.map { p -> "${p.id}, ${p.name}"}
+        val adapter: ListAdapter = ArrayAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                asStrings.toTypedArray()
+        )
+        lvNames.adapter = adapter
+    }
     private fun onClickPerson(pos: Int) {
         val mRep = PersonRepositoryInDB.get()
         val person = mRep.getByPos(pos)
@@ -69,5 +75,22 @@ class MainActivity : AppCompatActivity() {
     fun onClickClear(view: View) {
         val mRep = PersonRepositoryInDB.get()
         mRep.clear()
+    }
+
+    fun onClickFilter(view: View){
+        if (! filterActive ) {
+            val mRep = PersonRepositoryInDB.get()
+            val persons = mRep.getByFilterName(etName.text.toString())
+            setAdapterforListView(persons)
+            filterActive = true
+            btnFilter.text = resources.getString(R.string.remove_filter)
+        } else
+        {
+            val mRep = PersonRepositoryInDB.get()
+            val persons = mRep.getByFilterName("")
+            setAdapterforListView(persons)
+            filterActive = false
+            btnFilter.text = resources.getString(R.string.use_filter)
+        }
     }
 }
