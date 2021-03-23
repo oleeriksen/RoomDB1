@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import easv.oe.roomdb1.data.BEPerson
 import easv.oe.roomdb1.data.PersonRepositoryInDB
-import easv.oe.roomdb1.data.observeOnce
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -36,12 +35,9 @@ class MainActivity : AppCompatActivity() {
         mRep.insert(BEPerson(0,"Rup", 3))
     }
 
-    var cache: List<BEPerson>? = null;
-
     private fun setupDataObserver() {
         val mRep = PersonRepositoryInDB.get()
-        val nameObserver = Observer<List<BEPerson>>{ persons ->
-            cache = persons;
+        val updateGUIObserver = Observer<List<BEPerson>>{ persons ->
             val asStrings = persons.map { p -> "${p.id}, ${p.name}"}
              val adapter: ListAdapter = ArrayAdapter(
                      this,
@@ -49,27 +45,20 @@ class MainActivity : AppCompatActivity() {
                               asStrings.toTypedArray()
                                                     )
              lvNames.adapter = adapter
-            Log.d(TAG, "getAll observer notified")
+            Log.d(TAG, "UpdateGUI Observer notified")
         }
-        mRep.getAll().observe(this, nameObserver)
+        mRep.getAllLiveData().observe(this, updateGUIObserver)
 
         lvNames.onItemClickListener = AdapterView.OnItemClickListener {_,_,pos,_ -> onClickPerson(pos)}
     }
 
     private fun onClickPerson(pos: Int) {
-        val id = cache!![pos].id
-        //Toast.makeText(this, "You have clicked $name at position $pos", Toast.LENGTH_LONG).show()
-        val personObserver = Observer<BEPerson> { person ->
-            if (person != null)
-            {
-                Toast.makeText(this, "You have clicked ${person.name} ", Toast.LENGTH_LONG).show()
-                Log.d(TAG, "getById($id) observer notified")
-            }
-
-        }
         val mRep = PersonRepositoryInDB.get()
-        mRep.getById(id).observeOnce(this , personObserver)
-
+        val person = mRep.getByPos(pos)
+        if (person != null)
+        {
+            Toast.makeText(this, "You have clicked ${person} ", Toast.LENGTH_LONG).show()
+        }
     }
 
     fun onClickInsert(view: View) {
