@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun onClickPerson(pos: Int) {
         val mRep = PersonRepositoryInDB.get()
-        val person = mRep.getByPos(pos)
+        val person = if (filterActive) filterPersons!![pos] else mRep.getByPos(pos)
         if (person != null)
         {
             Toast.makeText(this, "You have clicked ${person} ", Toast.LENGTH_LONG).show()
@@ -77,11 +77,13 @@ class MainActivity : AppCompatActivity() {
         mRep.clear()
     }
 
+    var filterPersons: List<BEPerson>? = null
+
     fun onClickFilter(view: View){
         if (! filterActive ) {
             val mRep = PersonRepositoryInDB.get()
-            val persons = mRep.getByFilterName(etName.text.toString())
-            setAdapterforListView(persons)
+            filterPersons = mRep.getByFilterName(etName.text.toString())
+            setAdapterforListView(filterPersons!!)
             filterActive = true
             btnFilter.text = resources.getString(R.string.remove_filter)
         } else
